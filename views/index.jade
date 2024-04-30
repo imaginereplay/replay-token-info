@@ -3,3 +3,11 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  p Here are the API links you can use to access the RPlay Token information:
+  ul
+    li
+      a(href='/token') Token Details
+    li
+      a(href='/token/circulating-supply') Circulating Supply
+    li
+      a(href='/token/max-supply') Maximum Supply
