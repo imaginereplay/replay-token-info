@@ -7,11 +7,11 @@ router.get("/", async function (req, res, next) {
   res.send(await tokenInfo());
 });
 
-router.get("/circulating_supply", async function (req, res, next) {
+router.get("/circulating-supply", async function (req, res, next) {
   res.send(await getTotalSupply());
 });
 
-router.get("/max_supply", async function (req, res, next) {
+router.get("/max-supply", async function (req, res, next) {
   res.send(await getMaxSupply());
 });
 
