@@ -7,8 +7,50 @@ router.get("/", async function (req, res, next) {
   res.send(await tokenInfo());
 });
 
+router.get("/circulating_supply", async function (req, res, next) {
+  res.send(await getTotalSupply());
+});
+
+router.get("/max_supply", async function (req, res, next) {
+  res.send(await getMaxSupply());
+});
+
+async function getTotalSupply() {
+  const contract = getContract();
+  const totalSupply = await contract.totalSupply();
+  return ethers.formatUnits(totalSupply, 18).toString();
+}
+
+async function getMaxSupply() {
+  const contract = getContract();
+  const maxSupply = await contract.maxSupply();
+  return ethers.formatUnits(maxSupply, 18).toString();
+}
+
 // Interacting with the contract
 async function tokenInfo() {
+  const contract = getContract();
+
+  const totalSupply = await contract.totalSupply();
+
+  const name = await contract.name();
+  //console.log("name:", name);
+
+  const symbol = await contract.symbol();
+  //console.log("symbol:", symbol);
+
+  const maxSupply = await contract.maxSupply();
+  //console.log("Max Supply:", ethers.formatUnits(maxSupply, 18)); // Assuming token uses 18 decimals
+
+  return {
+    cirulating_supply: ethers.formatUnits(totalSupply, 18).toString(),
+    name,
+    symbol,
+    max_supply: ethers.formatUnits(maxSupply, 18).toString(),
+  };
+}
+
+function getContract() {
   // Set up the provider
   const provider = new ethers.JsonRpcProvider(
     "https://eth-rpc-api.thetatoken.org/rpc"
@@ -360,18 +402,7 @@ async function tokenInfo() {
   // Create a contract instance
   const contract = new ethers.Contract(address, abi, provider);
 
-  const totalSupply = await contract.totalSupply();
-
-  const name = await contract.name();
-  //console.log("name:", name);
-
-  const symbol = await contract.symbol();
-  //console.log("symbol:", symbol);
-
-  const maxSupply = await contract.maxSupply();
-  //console.log("Max Supply:", ethers.formatUnits(maxSupply, 18)); // Assuming token uses 18 decimals
-
-  return { cirulating_supply:  ethers.formatUnits(totalSupply, 18).toString(), name, symbol, max_supply: ethers.formatUnits(maxSupply, 18).toString() };
+  return contract;
 }
 
 module.exports = router;
